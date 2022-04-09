@@ -10,13 +10,13 @@ your local machine. Tested on Ubuntu 20.04 WSL.
 ### Prerequisites
 
 Run the following:
-- sudo apt-get install libmariadb-dev python3-dev
-- pip install -r requirements.txt
+- `sudo apt-get install libmariadb-dev python3-dev`
+- `pip install -r requirements.txt`
 
 ### Installing
 
 Once the pre-requisites above have been installed, do the following:
-- export FLASK_APP=main.py
-- flask run
+- `export FLASK_APP=main.py`
+- `flask run`
 
 Your local server should be running at http://localhost:5000
