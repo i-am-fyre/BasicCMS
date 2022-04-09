@@ -20,3 +20,6 @@ Once the pre-requisites above have been installed, do the following:
 - `flask run`
 
 Your local server should be running at http://localhost:5000
+
+## Screenshots
+![MangosRegister](https://user-images.githubusercontent.com/58180427/162591117-71d84e9b-f769-4d8d-a5a3-457ef0180c80.png)
