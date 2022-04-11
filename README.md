@@ -36,3 +36,5 @@ Your local server should then be running at http://localhost:5000
 
 ## Screenshots
 ![MangosRegister](https://user-images.githubusercontent.com/58180427/162591117-71d84e9b-f769-4d8d-a5a3-457ef0180c80.png)
+![MangosChangePW](https://user-images.githubusercontent.com/58180427/162652190-31ccf1b1-2261-49a3-a6c3-1673d9eb1ebf.png)
+
