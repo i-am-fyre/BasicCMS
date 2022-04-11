@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h2>Welcome {{ session.username }} </h2>
+
+<body>
+    <div class="change_password">
+        <h2>Change Password</h2>
+        <form action="{{ url_for('change_password') }}" method="post">
+            <label for="old_password">
+                <i class="fas fa-lock"></i>
+            </label>
+            <input type="password" name="old_password" placeholder="Current Password" id="old_password" required>
+            <label for="password">
+                <i class="fas fa-lock"></i>
+            </label>
+            <input type="password" name="new_password" placeholder="New Password" id="new_password" required>
+            <div class="msg">{{ msg }}</div>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+{% endblock %}

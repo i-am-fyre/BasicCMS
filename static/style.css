@@ -5,27 +5,39 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 body {
     background-color: #435165;
     margin: 0;
 }
+
 .register {
     width: 400px;
     background-color: #ffffff;
     box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
     margin: 100px auto;
 }
-.register h1 {
+
+.change_password {
+    width: 400px;
+    background-color: #ffffff;
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
+    margin: 100px auto;
+}
+
+.register h1, .change_password h2 {
     text-align: center;
     color: #5b6574;
     font-size: 24px;
     padding: 20px 0 20px 0;
     border-bottom: 1px solid #dee0e4;
 }
+
 .register .links {
     display: flex;
     padding: 0 15px;
 }
+
 .register .links a {
     color: #adb2ba;
     text-decoration: none;
@@ -33,20 +45,23 @@ body {
     padding: 0 10px 10px 10px;
     font-weight: bold;
 }
+
 .register .links a:hover {
     color: #9da3ac;
 }
+
 .register .links a.active {
     border-bottom: 3px solid #3274d6;
     color: #3274d6;
 }
-.register form {
+
+.register form, .change_password form {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     padding-top: 20px;
 }
-.register form label {
+.register form label, .change_password form label {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,14 +70,14 @@ body {
     background-color: #3274d6;
     color: #ffffff;
 }
-.register form input[type="password"], .register form input[type="text"], .register form select {
+.register form input[type="password"], .change_password form input[type="password"], .register form input[type="text"], .register form select {
     width: 310px;
     height: 50px;
     border: 1px solid #dee0e4;
     margin-bottom: 20px;
     padding: 0 15px;
 }
-.register form input[type="submit"] {
+.register form input[type="submit"], .change_password form input[type="submit"] {
     width: 100%;
     padding: 15px;
     margin-top: 20px;
@@ -73,7 +88,7 @@ body {
     color: #ffffff;
     transition: background-color 0.2s;
 }
-.register form input[type="submit"]:hover {
+.register form input[type="submit"]:hover, .change_password form input[type="submit"]:hover {
     background-color: #2868c7;
     transition: background-color 0.2s;
 }
@@ -130,7 +145,7 @@ body.loggedin {
 .content > p, .content > div {
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
     margin: 25px 0;
-    padding: 25px;
+    padding: 0px;
   background-color: #fff;
 }
 .content > p table td, .content > div table td {
@@ -144,4 +159,11 @@ body.loggedin {
 .content > div p {
   padding: 5px;
   margin: 0 0 10px 0;
+}
+
+.footer {
+    background-color: #2f3947;
+    height: 60px;
+    width: 100%;
+    border: 0;
 }

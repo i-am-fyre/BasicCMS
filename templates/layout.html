@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MaNGOS CMS - {% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	</head>
+	<body class="loggedin">
+		<nav class="navtop">
+			<div>
+				<h1>MaNGOS CMS</h1>
+                <a href="{{ url_for('index') }}"><i class="fas fa-home"></i>Home</a>
+				{% if 'username' in session %}
+					{% if session['gmlevel'] == 3 %}
+						<a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-user-cog"></i>Admin Dashboard</a>
+					{% endif %}
+				<a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i>Profile</a>
+				<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
+				{% else %}
+				<a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i>Login</a>
+				<a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i>Register</a>
+				{% endif %}
+			</div>
+		</nav>
+		<div class="content">
+			{% block content %}{% endblock %}
+		</div>
+	</body>
+    
+	<footer>
+		<center>Made with <i class="fa fa-heart"></i> by the <a href="https://www.getmangos.eu">MaNGOS</a> team!</center>
+	</footer>
+</html>
