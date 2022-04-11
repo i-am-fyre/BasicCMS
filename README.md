@@ -18,6 +18,8 @@ your local machine. Tested on Ubuntu 20.04 WSL.
 
 Run the following:
 - `sudo apt-get install libmariadb-dev python3-dev`
+- `sudo git clone https://github.com/i-am-fyre/BasicCMS`
+- `cd BasicCMS`
 - `pip install -r requirements.txt`
 
 ### Configuration
