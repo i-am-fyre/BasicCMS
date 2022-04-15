@@ -4,6 +4,8 @@ import MySQLdb
 import re
 from secrets import token_hex
 from hashlib import sha1
+import datetime
+import csv
 
 app = Flask(__name__)
 config = configparser.ConfigParser()
@@ -12,11 +14,10 @@ config.read('config.ini')
 app.secret_key = token_hex(16)
 
 # Initialize database
-mysql = MySQLdb.connect(host=config.get('Database', 'host'),
+db = MySQLdb.connect(host=config.get('Database', 'host'),
                         user=config.get('Database', 'user'),
                         password=config.get('Database', 'password'),
-                        port=int(config.get('Database', 'port')),
-                        database=config.get('Database', 'realmd_name'))
+                        port=int(config.get('Database', 'port')))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -31,16 +32,15 @@ def login():
         password_candidate = request.form['password']
 
         # Create cursor
-        # cur = mysql.cursor()
-        cur = mysql.cursor()
+        cur = db.cursor(MySQLdb.cursors.DictCursor)
 
         # Get user by username
-        result = cur.execute("SELECT * FROM account WHERE username = %s", [username])
+        result = cur.execute("SELECT * FROM realmd.account WHERE username = %s", [username])
 
         if result > 0:
             # Get stored hash
             data = cur.fetchone()
-            password = data[2]
+            password = data['sha_pass_hash']
             
 
             # Compare Passwords
@@ -48,12 +48,14 @@ def login():
                 # Passed
                 session['logged_in'] = True
                 session['username'] = username
-                session['gmlevel'] = data[3]
+                session['gmlevel'] = data['gmlevel']
+                session['account_id'] = data['id']
 
                 return redirect(url_for('index'))
             else:
                 error = 'Invalid login'
                 return render_template('login.html', msg=error)
+
             # Close connection
             cur.close()
         else:
@@ -76,11 +78,9 @@ def register():
         password = request.form['password']
         expansion = request.form['expansion']
 
-        print (expansion)
-
-        cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM account WHERE username = %s', (username,))
-        account = cursor.fetchone()
+        cur = db.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute('SELECT * FROM realmd.account WHERE username = %s', (username,))
+        account = cur.fetchone()
 
         if account:
             msg = 'Account already exists!'
@@ -90,16 +90,51 @@ def register():
             msg = 'Please fill out the form!'
         else:
             sha_pass_hash = sha1((username + ":" + password).upper().encode('utf-8')).hexdigest()
-            cursor.execute('INSERT INTO account (username, sha_pass_hash, expansion) VALUES (%s, %s, %s)', (username, sha_pass_hash, expansion))
-            mysql.commit()
+            cur.execute('INSERT INTO realmd.account (username, sha_pass_hash, expansion) VALUES (%s, %s, %s)', (username, sha_pass_hash, expansion))
+            db.commit()
             msg = 'You have successfully registered!'
+            
+        # Close connection
+        cur.close()
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
     return render_template('register.html', msg=msg)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('profile.html', msg='')
+    cur = db.cursor(MySQLdb.cursors.DictCursor)
+
+    characters = []
+    guilds = []
+    guild_members = []
+    guild_ranks = []
+    character_dbs = config.items( "CharacterDatabases" )
+    for key, char_db in character_dbs:
+        cur.execute('SELECT * FROM ' + char_db + '.characters WHERE account = %s', (session['account_id'],))
+        chars = cur.fetchall()
+        characters.append(chars)
+
+        cur.execute('SELECT * FROM ' + char_db + '.guild')
+        g = cur.fetchall()
+        guilds.append(g)
+
+        cur.execute('SELECT * FROM ' + char_db + '.guild_member WHERE guid IN (SELECT guid FROM ' + char_db + '.characters WHERE account = %s)', (session['account_id'],))
+        gm = cur.fetchall()
+        guild_members.append(gm)
+
+        cur.execute('SELECT * FROM ' + char_db + '.guild_rank')
+        gr = cur.fetchall()
+        guild_ranks.append(gr)
+
+    cur.execute('SELECT * FROM realmd.realmlist')
+    realms = cur.fetchall()
+    cur.execute('SELECT * FROM realmd.account')
+    accounts = cur.fetchall()
+
+    # Close connection
+    cur.close()
+
+    return render_template('profile.html', msg='', characters=characters, realms=realms, accounts=accounts, guilds=guilds, guild_members=guild_members, guild_ranks=guild_ranks)
 
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
@@ -111,19 +146,39 @@ def change_password():
     new_password = request.form['new_password']
 
     if old_password and new_password:
-        cursor = mysql.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM account WHERE username = %s', (session['username'],))
-        account = cursor.fetchone()
+        cur = db.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute('SELECT * FROM realmd.account WHERE username = %s', (session['username'],))
+        account = cur.fetchone()
 
         if account:
             if sha1((session['username'] + ":" + old_password).upper().encode('utf-8')).hexdigest().upper() == account['sha_pass_hash'].upper():
                 sha_pass_hash = sha1((session['username'] + ":" + new_password).upper().encode('utf-8')).hexdigest().upper()
-                cursor.execute('UPDATE account SET sha_pass_hash = %s, v = %s, s = %s WHERE username = %s', (sha_pass_hash, "", "", session['username']))
-                mysql.commit()
+                cur.execute('UPDATE realmd.account SET sha_pass_hash = %s, v = %s, s = %s WHERE username = %s', (sha_pass_hash, "", "", session['username']))
+                db.commit()
                 msg = 'Password successfully changed!'
             else:
                 msg = 'Old password is incorrect!'
         else:
             msg = 'Account not found!'
 
+        # Close connection
+        cur.close()
+
     return render_template('profile.html', msg='')
+
+@app.template_filter('convert_date')
+def format_date(timestamp):
+    return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+
+@app.template_filter('convert_time')
+def format_time(seconds):
+    return datetime.timedelta(seconds=seconds)
+
+@app.template_filter('zone_name')
+def zone_name(zone_id):
+    with open('data/AreaTable.dbc.csv', 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        next(reader)
+        for row in reader: 
+            if int(row[0]) == int(zone_id):
+                return row[13]
