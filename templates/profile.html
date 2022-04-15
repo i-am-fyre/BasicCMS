@@ -21,5 +21,161 @@
             <input type="submit" value="Submit">
         </form>
     </div>
+    
+    <div class="characters">
+        <h2>Your Characters</h2>
+        {% for realm in realms %}
+            <div class="realms">
+                <h2>{{ realm['name'] }}</h2>
+                    {% for character in characters[realm['id']-1] %}
+                        {% for account in accounts %}
+                            {% if account['id'] == character['account'] %}
+                            <div class="card {% if(character['race'] == 1) or (character['race'] == 3) or (character['race'] == 4) or (character['race'] == 7)or (character['race'] == 11)  or (character['race'] == 22)  %} blue {% endif %}">
+                                <div class="additional">
+                                    <div class="user-card">
+                                        <div class="level center">
+                                            Level {{ character['level'] }}
+                                        </div>
+                                        <div class="location center">
+                                            {{ character['zone'] | zone_name}}
+                                        </div>
+                                    </div>
+                                    <div class="more-info">
+                                        <h1>{{ character['name']}}</h1>
+                                        <div class="coords">
+                                            <span><b>Created on:</b> {{ character['createdDate'] | convert_date }}</span>
+                                            {% for gm in guild_members[realm['id']-1] %}
+                                                {% if gm['guid'] == character['guid'] %}
+                                                    {% for guild in guilds[realm['id']-1] %}
+                                                        {% if guild['guildid'] == gm['guildid'] %}
+                                                            <span>&lt;{{ guild['name'] }}&gt;</span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <span>Not in a guild.</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="coords">
+                                            <span><b>Time Played:</b> {{ character['totaltime'] | convert_time }}</span>
+                                            {% for gm in guild_members[realm['id']-1] %}
+                                                {% if gm['guid'] == character['guid'] %}
+                                                    {% for guild in guilds[realm['id']-1] %}
+                                                        {% if guild['guildid'] == gm['guildid'] %}
+                                                            {% for gr in guild_ranks[realm['id']-1] %}
+                                                                {% if (gr['guildid'] == guild['guildid']) and (gr['rid'] == gm['rank']) %}
+                                                                    <span>{{ gr['rname'] }}</span>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                </div>
+                                </div>
+                                <div class="general">
+                                    <h1>{{ character['name'] }}</h1>
+                                    <div class="icons">
+                                        <div>
+                                            {% if (character['race'] == 1) or (character['race'] == 3) or (character['race'] == 4) or (character['race'] == 7)or (character['race'] == 11)  or (character['race'] == 22)  %}
+                                            <img src="/static/img/Alliance_64.webp">
+                                            {% else %}
+                                            <img src="/static/img/Horde_64.webp">
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {% if (character['gender'] ==0) %}
+                                                {% if (character['race'] == 1) %}
+                                                <img src="/static/img/Ui-charactercreate-races_human-male.webp">
+                                                {% elif (character['race'] == 2) %}
+                                                <img src="/static/img/Ui-charactercreate-races_orc-male.webp">
+                                                {% elif (character['race'] == 3) %}
+                                                <img src="/static/img/Ui-charactercreate-races_dwarf-male.webp">
+                                                {% elif (character['race'] == 4) %}
+                                                <img src="/static/img/Ui-charactercreate-races_nightelf-male.webp">
+                                                {% elif (character['race'] == 5) %}
+                                                <img src="/static/img/Ui-charactercreate-races_undead-male.webp">
+                                                {% elif (character['race'] == 6) %}
+                                                <img src="/static/img/Ui-charactercreate-races_tauren-male.webp">
+                                                {% elif (character['race'] == 7) %}
+                                                <img src="/static/img/Ui-charactercreate-races_gnome-male.webp">
+                                                {% elif (character['race'] == 8) %}
+                                                <img src="/static/img/Ui-charactercreate-races_troll-male.webp">
+                                                {% elif (character['race'] == 9) %}
+                                                <img src="/static/img/Ui-charactercreate-races_goblin-male.webp">
+                                                {% elif (character['race'] == 10) %}
+                                                <img src="/static/img/Ui-charactercreate-races_bloodelf-male.webp">
+                                                {% elif (character['race'] == 11) %}
+                                                <img src="/static/img/Ui-charactercreate-races_draenei-male.webp">
+                                                {% elif (character['race'] == 22) %}
+                                                <img src="/static/img/Ui-charactercreate-races_worgen-male.webp">
+                                                {% endif %}
+                                            {% else %}
+                                                {% if (character['race'] == 1) %}
+                                                <img src="/static/img/Ui-charactercreate-races_human-female.webp">
+                                                {% elif (character['race'] == 2) %}
+                                                <img src="/static/img/Ui-charactercreate-races_orc-female.webp">
+                                                {% elif (character['race'] == 3) %}
+                                                <img src="/static/img/Ui-charactercreate-races_dwarf-female.webp">
+                                                {% elif (character['race'] == 4) %}
+                                                <img src="/static/img/Ui-charactercreate-races_nightelf-female.webp">
+                                                {% elif (character['race'] == 5) %}
+                                                <img src="/static/img/Ui-charactercreate-races_undead-female.webp">
+                                                {% elif (character['race'] == 6) %}
+                                                <img src="/static/img/Ui-charactercreate-races_tauren-female.webp">
+                                                {% elif (character['race'] == 7) %}
+                                                <img src="/static/img/Ui-charactercreate-races_gnome-female.webp">
+                                                {% elif (character['race'] == 8) %}
+                                                <img src="/static/img/Ui-charactercreate-races_troll-female.webp">
+                                                {% elif (character['race'] == 9) %}
+                                                <img src="/static/img/Ui-charactercreate-races_goblin-female.webp">
+                                                {% elif (character['race'] == 10) %}
+                                                <img src="/static/img/Ui-charactercreate-races_bloodelf-female.webp">
+                                                {% elif (character['race'] == 11) %}
+                                                <img src="/static/img/Ui-charactercreate-races_draenei-female.webp">
+                                                {% elif (character['race'] == 22) %}
+                                                <img src="/static/img/Ui-charactercreate-races_worgen-female.webp">
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {% if (character['class'] == 1) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_warrior.webp">
+                                            {% elif (character['class'] == 2) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_paladin.webp">
+                                            {% elif (character['class'] == 3) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_hunter.webp">
+                                            {% elif (character['class'] == 4) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_rogue.webp">
+                                            {% elif (character['class'] == 5) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_priest.webp">
+                                            {% elif (character['class'] == 6) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_deathknight.webp">
+                                            {% elif (character['class'] == 7) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_shaman.webp">
+                                            {% elif (character['class'] == 8) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_mage.webp">
+                                            {% elif (character['class'] == 9) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_warlock.webp">
+                                            {% elif (character['class'] == 10) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_monk.webp">
+                                            {% elif (character['class'] == 11) %}
+                                            <img src="/static/img/Ui-charactercreate-classes_druid.webp">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </table>
+            </div>
+            <p></p>
+        {% endfor %}
+    </div>
+
 </body>
 {% endblock %}
