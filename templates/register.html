@@ -3,38 +3,39 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-		<div class="register">
-			<h1>Register</h1>
-			<div class="links">
-				<a href="{{ url_for('register') }}" class="active">Register</a>
-				<a href="{{ url_for('login') }}">Login</a>
-			</div>
-			<form action="{{ url_for('register') }}" method="post">
-				<label for="username">
-					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
-				<label for="expansion">
-					<i class="fas fa-list-ol"></i>
-				</label>
-				<select name="expansion" class="Input" required>
-					<!-- comment in/out expansions you don't want as an option. -->
-					<option value="0">Vanilla</option>
-					<option value="1">TBC</option>
-					<option value="2">WotLK</option>
-					<option value="3">Cataclysm</option>
-					<!-- <option value="4">MoP</option>
-					<option value="5">WoD</option>
-					<option value="6">Legion</option> -->
-				</select>
-
-				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Register">
-			</form>
+<body>
+	<div class="register">
+		<h1>Register</h1>
+		<div class="links">
+			<a href="{{ url_for('register') }}" class="active">Register</a>
+			<a href="{{ url_for('login') }}">Login</a>
 		</div>
-	</body>
+		<form action="{{ url_for('register') }}" method="post">
+			<label for="username">
+				<i class="fas fa-user"></i>
+			</label>
+			<input type="text" name="username" placeholder="Username" id="username" required>
+			<label for="password">
+				<i class="fas fa-lock"></i>
+			</label>
+			<input type="password" name="password" placeholder="Password" id="password" required>
+			<label for="expansion">
+				<i class="fas fa-list-ol"></i>
+			</label>
+			<select name="expansion" class="Input" required>
+				<!-- comment in/out expansions you don't want as an option. -->
+				<option value="0">Vanilla</option>
+				<option value="1">TBC</option>
+				<option value="2">WotLK</option>
+				<option value="3">Cataclysm</option>
+				<!-- <option value="4">MoP</option>
+				<option value="5">WoD</option>
+				<option value="6">Legion</option> -->
+			</select>
+
+			<div class="msg">{{ msg }}</div>
+			<input type="submit" value="Register">
+		</form>
+	</div>
+</body>
 {% endblock %}
