@@ -3,9 +3,10 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<h2>Welcome {{ session.username }} </h2>
+<h2>Welcome {{ session.username }}! </h2>
 
 <body>
+    <button type="button" class="collapsible">Profile Management</button>
     <div class="change_password">
         <h2>Change Password</h2>
         <form action="{{ url_for('change_password') }}" method="post">
@@ -22,8 +23,8 @@
         </form>
     </div>
     
+    <button type="button" class="collapsible">Your Characters</button>
     <div class="characters">
-        <h2>Your Characters</h2>
         {% for realm in realms %}
             <div class="realms">
                 <h2>{{ realm['name'] }}</h2>
@@ -177,5 +178,26 @@
         {% endfor %}
     </div>
 
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+        
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+                if (content.style.maxHeight){
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
 </body>
 {% endblock %}
