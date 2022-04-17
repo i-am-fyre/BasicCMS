@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Login</title>
-		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-	</head>
+{% extends 'layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
 	<body>
 		<div class="register">
 			<h1>Login</h1>
@@ -27,4 +24,4 @@
 			</form>
 		</div>
 	</body>
-</html>
+{% endblock %}
