@@ -19,6 +19,8 @@ db = MySQLdb.connect(host=config.get('Database', 'host'),
                         password=config.get('Database', 'password'),
                         port=int(config.get('Database', 'port')))
 
+realmd_db = config.get('RealmDatabase', 'realmd')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     msg = ''
@@ -35,7 +37,7 @@ def login():
         cur = db.cursor(MySQLdb.cursors.DictCursor)
 
         # Get user by username
-        result = cur.execute("SELECT * FROM realmd.account WHERE username = %s", [username])
+        result = cur.execute("SELECT * FROM " + realmd_db + ".account WHERE username = %s", [username])
 
         if result > 0:
             # Get stored hash
@@ -79,7 +81,7 @@ def register():
         expansion = request.form['expansion']
 
         cur = db.cursor(MySQLdb.cursors.DictCursor)
-        cur.execute('SELECT * FROM realmd.account WHERE username = %s', (username,))
+        cur.execute('SELECT * FROM ' + realmd_db + '.account WHERE username = %s', (username,))
         account = cur.fetchone()
 
         if account:
@@ -90,7 +92,7 @@ def register():
             msg = 'Please fill out the form!'
         else:
             sha_pass_hash = sha1((username + ":" + password).upper().encode('utf-8')).hexdigest()
-            cur.execute('INSERT INTO realmd.account (username, sha_pass_hash, expansion) VALUES (%s, %s, %s)', (username, sha_pass_hash, expansion))
+            cur.execute('INSERT INTO ' + realmd_db + '.account (username, sha_pass_hash, expansion) VALUES (%s, %s, %s)', (username, sha_pass_hash, expansion))
             db.commit()
             msg = 'You have successfully registered!'
             
@@ -126,9 +128,9 @@ def profile():
         gr = cur.fetchall()
         guild_ranks.append(gr)
 
-    cur.execute('SELECT * FROM realmd.realmlist')
+    cur.execute('SELECT * FROM ' + realmd_db + '.realmlist')
     realms = cur.fetchall()
-    cur.execute('SELECT * FROM realmd.account')
+    cur.execute('SELECT * FROM ' + realmd_db + '.account')
     accounts = cur.fetchall()
 
     # Close connection
@@ -147,13 +149,13 @@ def change_password():
 
     if old_password and new_password:
         cur = db.cursor(MySQLdb.cursors.DictCursor)
-        cur.execute('SELECT * FROM realmd.account WHERE username = %s', (session['username'],))
+        cur.execute('SELECT * FROM ' + realmd_db + '.account WHERE username = %s', (session['username'],))
         account = cur.fetchone()
 
         if account:
             if sha1((session['username'] + ":" + old_password).upper().encode('utf-8')).hexdigest().upper() == account['sha_pass_hash'].upper():
                 sha_pass_hash = sha1((session['username'] + ":" + new_password).upper().encode('utf-8')).hexdigest().upper()
-                cur.execute('UPDATE realmd.account SET sha_pass_hash = %s, v = %s, s = %s WHERE username = %s', (sha_pass_hash, "", "", session['username']))
+                cur.execute('UPDATE ' + realmd_db + '.account SET sha_pass_hash = %s, v = %s, s = %s WHERE username = %s', (sha_pass_hash, "", "", session['username']))
                 db.commit()
                 msg = 'Password successfully changed!'
             else:
