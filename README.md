@@ -32,12 +32,10 @@ You can select which expansions of MaNGOS the user can register for within the `
 
 Once the pre-requisites above have been installed and configurations are set, do the following:
 - `export FLASK_APP=main.py`
-- `flask run`
+- `flask run --port=4830 --host=0.0.0.0`
   
-Your local server should then be running at http://localhost:5000
+Your local server should then be running at http://localhost:4830
 
-If you want this to be accessible to other hosts on the network, you can run with the host flag:
-- `flask run --host=0.0.0.0`
 
 ## Screenshots
 ![MangosRegister](https://user-images.githubusercontent.com/58180427/162591117-71d84e9b-f769-4d8d-a5a3-457ef0180c80.png)
